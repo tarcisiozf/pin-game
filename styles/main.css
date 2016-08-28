@@ -25,6 +25,7 @@
 
 .pin_container {
 	background-color: #ddd;
+	cursor: url('../images/trash.png'), pointer;
 }
 
 .pin_container .pin {

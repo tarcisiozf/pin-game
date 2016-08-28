@@ -31,11 +31,13 @@
 			this.pin_lock = false;
 			this.pin_list = [];
 			this.pin_container = document.querySelector('.pin_container');
+			this.pin_container.addEventListener('click', this.resetPins);
 
 			this.historic = document.querySelector('.historic');
 
 			this.generatePassword();
 			this.generateButtons();
+
 		}
 
 		addToHistoric(pins, matchs) {
@@ -59,7 +61,11 @@
 			row.appendChild(pins_list);
 
 			// MATCHS
-			let match_color = ['transparent', '#fff', '#353535'];
+			let match_info = [
+				{ color: 'transparent'}, 
+				{ title: "Color match", color: '#fff'}, 
+				{ title: "Position match", color: '#353535'}
+			];
 
 			let matchs_list = document.createElement('div');
 				matchs_list.className = 'matchs';
@@ -67,10 +73,11 @@
 			matchs.map(type => {
 				let match = document.createElement('div');
 					match.className = 'match';
-					match.style.backgroundColor = match_color[type];
+					match.style.backgroundColor = match_info[type].color;
 
 				if ( type > 0 ) {
-					match.style.borderColor = match_color[type];
+					match.style.borderColor = match_info[type].color;
+					match.title = match_info[type].title;
 				}
 
 				matchs_list.appendChild(match);
