@@ -38,8 +38,6 @@
 			this.generatePassword();
 			this.generateButtons();
 			this.addPinListeners();
-
-			console.log(this.password);
 		}
 
 		updatePins() {
