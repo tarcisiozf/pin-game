@@ -4,11 +4,13 @@
 
 		constructor() {
 
-			this.generateButtons 	= this.generateButtons.bind(this);
+			this.clearPin 			= this.clearPin.bind(this);
+			this.resetPins 			= this.resetPins.bind(this);
 			this.buttonClick 		= this.buttonClick.bind(this);
 			this.checkMatchs 		= this.checkMatchs.bind(this);
-			this.resetPins 			= this.resetPins.bind(this);
 			this.addToHistoric 		= this.addToHistoric.bind(this);
+			this.generateButtons 	= this.generateButtons.bind(this);
+			this.addPinListeners 	= this.addPinListeners.bind(this);
 
 			this.availableColors = [
 				'#E7C901',
@@ -27,17 +29,25 @@
 
 			this.password = [];
 
-			this.pin_position = 0;
 			this.pin_lock = false;
 			this.pin_list = [];
-			this.pin_container = document.querySelector('.pin_container');
-			this.pin_container.addEventListener('click', this.resetPins);
+			this.pin_container = document.querySelectorAll('.pin_container .pin');
 
 			this.historic = document.querySelector('.historic');
 
 			this.generatePassword();
 			this.generateButtons();
+			this.addPinListeners();
 
+			console.log(this.password);
+		}
+
+		updatePins() {
+			for (let i = 0; i < this.pin_container.length; i++) {
+				let color = this.pin_list[i];
+
+				this.pin_container[i].style.backgroundColor = color || '#bbb';
+			}
 		}
 
 		addToHistoric(pins, matchs) {
@@ -116,7 +126,7 @@
 					alert('You won!');
 				}, 1000);
 
-				return false;
+				this.gameOver = true;
 			}
 
 			return matchs;
@@ -125,15 +135,9 @@
 		resetPins() {
 			this.pin_list = [];
 
-			let list = this.pin_container.childNodes;
-			let i = 0;
-
-			while(i != 8) {
-				list[i + 1].style.backgroundColor = '#bbb';
-				i += 2;
+			for (let i = 0; i < this.pin_container.length; i++) {
+				this.pin_container[i].style.backgroundColor = '#bbb';
 			}
-
-			this.pin_position = 0;
 		}
 
 		buttonClick(event) {
@@ -147,25 +151,25 @@
 				return;
 			}
 
-			this.pin_container.childNodes[this.pin_position + 1].style.backgroundColor = color;
-
 			this.pin_list.push(color);
 
-			this.pin_position += 2;
+			this.updatePins();
 
-			// all pins are set
-			if ( this.pin_position == 8 ) {
-				this.pin_lock = true;
+			// check if all pins are set
+			if ( this.pin_list.length != 4 ) {
+				return;
+			}
 
-				let matchs = this.checkMatchs();
+			this.pin_lock = true;
 
-				if ( ! matchs ) {
-					return;
-				}
+			let matchs = this.checkMatchs();
 
-				this.addToHistoric(this.pin_list, matchs);
+			this.addToHistoric(this.pin_list, matchs);
 
-				this.resetPins();
+			this.resetPins();
+
+			if ( this.gameOver ) {
+				return;
 			}
 
 			if ( ! this.try ) {
@@ -174,6 +178,25 @@
 			}
 
 			this.pin_lock = false;
+		}
+
+		clearPin(event) {
+			if ( ! event.target ) {
+				return;
+			}
+
+			let index = event.target.getAttribute('index');
+			this.pin_list.splice(index, 1);
+
+			this.updatePins();
+		}
+
+		addPinListeners() {
+			for (let i = 0; i < this.pin_container.length; i++) {
+				let pin = this.pin_container[i];
+					pin.setAttribute('index', i);
+					pin.addEventListener('click', this.clearPin);
+			}
 		}
 
 		generatePassword() {

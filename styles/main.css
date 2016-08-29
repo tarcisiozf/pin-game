@@ -25,7 +25,6 @@
 
 .pin_container {
 	background-color: #ddd;
-	cursor: url('../images/trash.png'), pointer;
 }
 
 .pin_container .pin {
@@ -35,6 +34,7 @@
 	float: left;
 	margin: 10px 37.5px;
 	background-color: #bbb;
+	cursor: url('../images/trash.png'), pointer;
 }
 
 .buttons_container .button {
